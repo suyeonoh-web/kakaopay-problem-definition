@@ -1573,8 +1573,9 @@
     }
   }
 
-  // 기존 리프 박스에 자식 추가 버튼 자동 부착 (꼬리의 꼬리 지원)
-  document.addEventListener('DOMContentLoaded', () => {
+  // 모든 박스에 자식 추가 버튼 자동 부착 — 무한 깊이 지원
+  // (script가 body 끝에 있어 DOM이 이미 준비된 상태이므로 즉시 실행)
+  function ensureAddButtons() {
     document.querySelectorAll('.lt-leaf').forEach(box => {
       const li = box.closest('.lt-node');
       if (!li) return;
@@ -1584,7 +1585,8 @@
       ul.innerHTML = '<li class="lt-add-row"><button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button></li>';
       li.appendChild(ul);
     });
-  });
+  }
+  ensureAddButtons();
 
   function exportLeaf(leafBox, depth) {
     const pad = '  '.repeat(depth);
