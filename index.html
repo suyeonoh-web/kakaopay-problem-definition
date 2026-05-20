@@ -723,6 +723,64 @@
   }
   .lt-hint b { color: var(--text); font-weight: 700; }
 
+  /* Inline-editable boxes (contenteditable) */
+  [contenteditable="true"] {
+    outline: none;
+    border-radius: 4px;
+    transition: background .15s, box-shadow .15s;
+    cursor: text;
+    min-width: 16px;
+    min-height: 1em;
+  }
+  [contenteditable="true"]:hover {
+    background: rgba(0,0,0,0.03);
+    box-shadow: 0 0 0 2px var(--line);
+  }
+  [contenteditable="true"]:focus {
+    background: rgba(254, 229, 0, 0.18);
+    box-shadow: 0 0 0 2px var(--kakao-yellow);
+  }
+  [contenteditable="true"]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-mute);
+    font-weight: 400;
+    font-style: normal;
+    pointer-events: none;
+  }
+  .lt-root[contenteditable="true"]:hover { background: rgba(0,0,0,0.06); }
+  .lt-root[contenteditable="true"]:focus {
+    background: #FFF6B0;
+    box-shadow: 0 0 0 3px #FFCD00;
+  }
+
+  /* Status tag clickable */
+  .lt-leaf-tag {
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s;
+  }
+  .lt-leaf-tag:hover { transform: scale(1.05); }
+  .lt-leaf-tag:active { transform: scale(0.95); }
+
+  /* Delete button on each box */
+  .lt-del {
+    position: absolute;
+    top: -8px; right: -8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text-mute);
+    font-size: 13px; line-height: 1;
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+    z-index: 3;
+  }
+  .lt-box:hover > .lt-del { display: flex; }
+  .lt-del:hover { color: var(--bad); border-color: var(--bad); }
+
   /* WORKSHOP */
   .ws-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .ws-card {
@@ -1204,36 +1262,31 @@
       <ul class="lt-list">
         <li class="lt-node">
           <!-- ROOT -->
-          <div class="lt-box lt-root">
-            ❓ Why<br>왜 기존 사용자 2,265만 명은<br>카카오페이증권에 도달하지 않는가?
-          </div>
+          <div class="lt-box lt-root" contenteditable="true" data-placeholder="핵심 질문을 입력하세요">왜 카카오페이 사용자는 증권을 한 번도 안 쓰는가?</div>
 
           <ul class="lt-list">
-            <!-- B1 -->
+
+            <!-- B1 인지 -->
             <li class="lt-node">
               <div class="lt-box lt-branch b1">
-                <span class="lt-num">B1</span>
-                <div class="lt-title">알기 (Know)</div>
-                <div class="lt-sub">증권 기능 존재 자체를 모른다</div>
+                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                <span class="lt-num" contenteditable="true">B1</span>
+                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">인지 문제</div>
+                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">모른다</div>
               </div>
               <ul class="lt-list">
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-suspected">의심</span>
-                    <span class="lt-leaf-text">메인 화면에서 증권 진입 동선이 광고·결제에 밀려 노출이 약하다</span>
-                    <div class="lt-leaf-note">메모: 메인 카드 노출 빈도 데이터 필요</div>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">카카오페이에 증권이 있는지 모른다</span>
                   </div>
                 </li>
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">"카카오페이"와 "카카오페이증권"을 별개 앱·서비스로 오해한다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">투자 진입 CRM·알림이 비활성·신규 사용자에게 도달하지 않는다</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">증권 탭을 발견하지 못한다</span>
                   </div>
                 </li>
                 <li class="lt-add-row">
@@ -1242,31 +1295,27 @@
               </ul>
             </li>
 
-            <!-- B2 -->
+            <!-- B2 신뢰 -->
             <li class="lt-node">
               <div class="lt-box lt-branch b2">
-                <span class="lt-num">B2</span>
-                <div class="lt-title">접근 (Reach)</div>
-                <div class="lt-sub">알지만 진입까지 비용이 크다</div>
+                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                <span class="lt-num" contenteditable="true">B2</span>
+                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">신뢰 문제</div>
+                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">못 믿는다</div>
               </div>
               <ul class="lt-list">
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf confirmed" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-confirmed">검증</span>
-                    <span class="lt-leaf-text">VOC "찾기 어렵다, 광고가 먼저 보인다" — 동선 깊이 문제</span>
-                    <div class="lt-leaf-note">메모: 리서치 VOC 반복 키워드 1순위</div>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">카카오페이를 투자 앱으로 안 본다</span>
                   </div>
                 </li>
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-suspected">의심</span>
-                    <span class="lt-leaf-text">투자 탭이 보험·대출과 섞여 있어 인지 비용이 증가한다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">결제 완료 화면에 투자로 잇는 트리거가 없다 ("바로 투자" 부재)</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">"귀여운 앱에 내 돈 맡기기 불안하다"</span>
                   </div>
                 </li>
                 <li class="lt-add-row">
@@ -1275,31 +1324,27 @@
               </ul>
             </li>
 
-            <!-- B3 -->
+            <!-- B3 동기 -->
             <li class="lt-node">
               <div class="lt-box lt-branch b3">
-                <span class="lt-num">B3</span>
-                <div class="lt-title">시도 (Try)</div>
-                <div class="lt-sub">진입은 했지만 첫 거래로 이어지지 않는다</div>
+                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                <span class="lt-num" contenteditable="true">B3</span>
+                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">동기 문제</div>
+                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">이유가 없다</div>
               </div>
               <ul class="lt-list">
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-suspected">의심</span>
-                    <span class="lt-leaf-text">"동전 모으기" 같은 초저관여 진입 상품이 약해 첫 거래 장벽이 높다</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">이미 쓰는 증권앱이 있다</span>
                   </div>
                 </li>
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">선불충전금 2조 원이 투자 진입과 연결된 인센티브가 없다</span>
-                    <div class="lt-leaf-note">메모: 잔액 → 자동투자 연동 가설 검토</div>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">결제 데이터가 맞춤 투자 제안으로 활용되지 않는다 (개인화 결여)</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">굳이 여기서 해야 할 이유를 모른다</span>
                   </div>
                 </li>
                 <li class="lt-add-row">
@@ -1308,31 +1353,56 @@
               </ul>
             </li>
 
-            <!-- B4 -->
+            <!-- B4 심리 -->
             <li class="lt-node">
               <div class="lt-box lt-branch b4">
-                <span class="lt-num">B4</span>
-                <div class="lt-title">유지 (Stay)</div>
-                <div class="lt-sub">"투자용"으로는 부담스러워 멀어진다</div>
+                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                <span class="lt-num" contenteditable="true">B4</span>
+                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">심리 문제</div>
+                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">두렵다</div>
               </div>
               <ul class="lt-list">
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf confirmed" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-confirmed">검증</span>
-                    <span class="lt-leaf-text">"가벼운 결제·송금 앱" 브랜드 이미지가 투자 플랫폼 전환의 인지 부담</span>
-                    <div class="lt-leaf-note">메모: 리서치 분석에서 직접 도출되는 결론</div>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">투자 자체가 처음이라 무섭다</span>
                   </div>
                 </li>
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-suspected">의심</span>
-                    <span class="lt-leaf-text">토스증권 대비 "전문성·정보 깊이"가 약하다는 사용자 인식</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">잃을까봐 시작을 못 한다</span>
+                  </div>
+                </li>
+                <li class="lt-add-row">
+                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+                </li>
+              </ul>
+            </li>
+
+            <!-- B5 UX -->
+            <li class="lt-node">
+              <div class="lt-box lt-branch b5">
+                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                <span class="lt-num" contenteditable="true">B5</span>
+                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">UX 문제</div>
+                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">불편하다</div>
+              </div>
+              <ul class="lt-list">
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">진입 경로가 복잡하다</span>
                   </div>
                 </li>
                 <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-                    <span class="lt-leaf-tag tag-unknown">미확인</span>
-                    <span class="lt-leaf-text">투자 손실 우려가 카카오페이 전체 신뢰도에 영향을 줄까봐 망설인다</span>
+                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">첫 매수까지 흐름이 어렵다</span>
                   </div>
                 </li>
                 <li class="lt-add-row">
@@ -1343,16 +1413,18 @@
 
             <!-- + 가지 추가 -->
             <li class="lt-add-row">
-              <button class="lt-add-btn" onclick="addBranch(this)">＋ 가지(MECE) 추가</button>
+              <button class="lt-add-btn" onclick="addBranch(this)">＋ 가지(MECE 카테고리) 추가</button>
             </li>
           </ul>
         </li>
       </ul>
 
       <div class="lt-hint">
-        <span><b>리프 박스 클릭</b> · 상태 순환 (검증 → 의심 → 미확인)</span>
-        <span><b>리프 박스 우클릭</b> · 메모 추가/토글</span>
-        <span><b>＋ 박스 추가</b> · 같은 가지에 새 가설 박스 생성</span>
+        <span><b>모든 박스</b> · 클릭하면 바로 텍스트 수정</span>
+        <span><b>상태 태그 클릭</b> · 검증 → 의심 → 미확인 순환</span>
+        <span><b>박스 우클릭</b> · 메모 추가/토글</span>
+        <span><b>＋ 박스 추가</b> · 빈 박스 즉시 생성 (입력 가능 상태)</span>
+        <span><b>박스 우상단 × </b> · 삭제</span>
       </div>
     </div>
   </div>
@@ -1406,13 +1478,9 @@
 </footer>
 
 <script>
-  function escapeText(s) {
-    const d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-  }
-
-  function cycleStatus(leafEl) {
+  function cycleStatus(tagEl) {
+    const leafEl = tagEl.closest('.lt-leaf');
+    if (!leafEl) return;
     const states = ['confirmed', 'suspected', 'unknown'];
     const labels = { confirmed: '검증', suspected: '의심', unknown: '미확인' };
     const cls = { confirmed: 'tag-confirmed', suspected: 'tag-suspected', unknown: 'tag-unknown' };
@@ -1420,11 +1488,8 @@
     const next = states[(states.indexOf(current) + 1) % states.length];
     states.forEach(s => leafEl.classList.remove(s));
     leafEl.classList.add(next);
-    const tag = leafEl.querySelector('.lt-leaf-tag');
-    if (tag) {
-      tag.className = 'lt-leaf-tag ' + cls[next];
-      tag.textContent = labels[next];
-    }
+    tagEl.className = 'lt-leaf-tag ' + cls[next];
+    tagEl.textContent = labels[next];
   }
 
   function addMemo(evt, leafEl) {
@@ -1445,33 +1510,45 @@
     }
   }
 
+  function focusEditable(el) {
+    el.focus();
+    // place cursor inside
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   function addLeaf(btnEl) {
-    const text = prompt('새 가설(박스 내용)을 입력하세요:');
-    if (!text) return;
     const addRow = btnEl.closest('.lt-add-row');
     const newLi = document.createElement('li');
     newLi.className = 'lt-node';
     newLi.innerHTML = `
-      <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
-        <span class="lt-leaf-tag tag-unknown">미확인</span>
-        <span class="lt-leaf-text">${escapeText(text)}</span>
+      <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
+        <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+        <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
+        <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요"></span>
       </div>
     `;
     addRow.parentElement.insertBefore(newLi, addRow);
+    focusEditable(newLi.querySelector('.lt-leaf-text'));
   }
 
   function addBranch(btnEl) {
-    const title = prompt('새 가지(MECE 카테고리) 이름을 입력하세요. 예: B5 추천 (Refer)');
-    if (!title) return;
-    const sub = prompt('이 가지에 대한 한 줄 설명을 입력하세요 (선택):') || '';
     const addRow = btnEl.closest('.lt-add-row');
     const newLi = document.createElement('li');
     newLi.className = 'lt-node';
+    const existingBranches = document.querySelectorAll('.lt-branch').length;
+    const colorClass = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'][existingBranches % 6];
+    const nextNum = 'B' + (existingBranches + 1);
     newLi.innerHTML = `
-      <div class="lt-box lt-branch b5">
-        <span class="lt-num">+</span>
-        <div class="lt-title">${escapeText(title)}</div>
-        ${sub ? `<div class="lt-sub">${escapeText(sub)}</div>` : ''}
+      <div class="lt-box lt-branch ${colorClass}">
+        <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
+        <span class="lt-num" contenteditable="true">${nextNum}</span>
+        <div class="lt-title" contenteditable="true" data-placeholder="가지 제목"></div>
+        <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)"></div>
       </div>
       <ul class="lt-list">
         <li class="lt-add-row">
@@ -1480,6 +1557,15 @@
       </ul>
     `;
     addRow.parentElement.insertBefore(newLi, addRow);
+    focusEditable(newLi.querySelector('.lt-title'));
+  }
+
+  function delNode(btnEl) {
+    const node = btnEl.closest('.lt-node');
+    if (!node) return;
+    if (confirm('이 박스(및 하위 박스)를 삭제할까요?')) {
+      node.remove();
+    }
   }
 
   function exportTree() {
@@ -1487,18 +1573,19 @@
     const root = document.querySelector('.lt-root');
     if (root) out += '> ' + root.innerText.trim().replace(/\n+/g, ' ') + '\n\n';
     document.querySelectorAll('.lt-list > .lt-node > .lt-list > .lt-node').forEach(b => {
-      const num = b.querySelector('.lt-num');
-      const title = b.querySelector('.lt-title');
-      const sub = b.querySelector('.lt-sub');
-      if (!num || !title) return;
-      out += `### ${num.textContent.trim()} · ${title.textContent.trim()}`;
-      if (sub) out += ` — ${sub.textContent.trim()}`;
+      const branch = b.querySelector(':scope > .lt-branch');
+      if (!branch) return;
+      const num = branch.querySelector('.lt-num');
+      const title = branch.querySelector('.lt-title');
+      const sub = branch.querySelector('.lt-sub');
+      out += `### ${num ? num.textContent.trim() : ''} · ${title ? title.textContent.trim() : ''}`;
+      if (sub && sub.textContent.trim()) out += ` — ${sub.textContent.trim()}`;
       out += '\n';
       b.querySelectorAll(':scope > .lt-list > .lt-node > .lt-leaf').forEach(l => {
         const tag = l.querySelector('.lt-leaf-tag');
         const text = l.querySelector('.lt-leaf-text');
-        if (!tag || !text) return;
-        out += `- [${tag.textContent.trim()}] ${text.textContent.trim()}\n`;
+        if (!text) return;
+        out += `- [${tag ? tag.textContent.trim() : '미확인'}] ${text.textContent.trim()}\n`;
         const note = l.querySelector('.lt-leaf-note');
         if (note && l.classList.contains('has-note')) {
           out += `  └ ${note.textContent.trim()}\n`;
