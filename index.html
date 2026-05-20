@@ -723,6 +723,34 @@
   }
   .lt-hint b { color: var(--text); font-weight: 700; }
 
+  /* Toolbar (status + user) */
+  .lt-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 12px; color: var(--text-dim);
+    flex-wrap: wrap; gap: 8px;
+  }
+  .lt-status::before {
+    content: "●"; color: var(--good);
+    margin-right: 6px; font-size: 9px;
+    vertical-align: middle;
+  }
+  .lt-status.error::before { color: var(--bad); }
+  .lt-status.syncing::before { color: var(--warn); animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: 0.3; } }
+  .lt-me b { color: var(--text); }
+  .lt-tiny-btn {
+    margin-left: 6px;
+    padding: 2px 8px; font-size: 11px;
+    background: transparent; border: 1px solid var(--line);
+    border-radius: 4px; color: var(--text-dim); cursor: pointer;
+  }
+  .lt-tiny-btn:hover { border-color: var(--text); color: var(--text); }
+
   /* Inline-editable boxes (contenteditable) */
   [contenteditable="true"] {
     outline: none;
@@ -1258,174 +1286,22 @@
       <button class="btn" onclick="window.print()">PDF로 저장 / 인쇄</button>
     </div>
 
+    <div class="lt-toolbar">
+      <span class="lt-status" id="lt-status">초기화 중…</span>
+      <span class="lt-me">편집자: <b id="lt-me-name">—</b> <button class="lt-tiny-btn" onclick="changeUserName()">변경</button></span>
+    </div>
+
     <div class="logic-tree">
-      <ul class="lt-list">
-        <li class="lt-node">
-          <!-- ROOT -->
-          <div class="lt-box lt-root" contenteditable="true" data-placeholder="핵심 질문을 입력하세요">왜 카카오페이 사용자는 증권을 한 번도 안 쓰는가?</div>
+      <div id="lt-mount"></div>
+    </div>
 
-          <ul class="lt-list">
-
-            <!-- B1 인지 -->
-            <li class="lt-node">
-              <div class="lt-box lt-branch b1">
-                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                <span class="lt-num" contenteditable="true">B1</span>
-                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">인지 문제</div>
-                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">모른다</div>
-              </div>
-              <ul class="lt-list">
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">카카오페이에 증권이 있는지 모른다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">증권 탭을 발견하지 못한다</span>
-                  </div>
-                </li>
-                <li class="lt-add-row">
-                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-                </li>
-              </ul>
-            </li>
-
-            <!-- B2 신뢰 -->
-            <li class="lt-node">
-              <div class="lt-box lt-branch b2">
-                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                <span class="lt-num" contenteditable="true">B2</span>
-                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">신뢰 문제</div>
-                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">못 믿는다</div>
-              </div>
-              <ul class="lt-list">
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">카카오페이를 투자 앱으로 안 본다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">"귀여운 앱에 내 돈 맡기기 불안하다"</span>
-                  </div>
-                </li>
-                <li class="lt-add-row">
-                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-                </li>
-              </ul>
-            </li>
-
-            <!-- B3 동기 -->
-            <li class="lt-node">
-              <div class="lt-box lt-branch b3">
-                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                <span class="lt-num" contenteditable="true">B3</span>
-                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">동기 문제</div>
-                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">이유가 없다</div>
-              </div>
-              <ul class="lt-list">
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">이미 쓰는 증권앱이 있다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">굳이 여기서 해야 할 이유를 모른다</span>
-                  </div>
-                </li>
-                <li class="lt-add-row">
-                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-                </li>
-              </ul>
-            </li>
-
-            <!-- B4 심리 -->
-            <li class="lt-node">
-              <div class="lt-box lt-branch b4">
-                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                <span class="lt-num" contenteditable="true">B4</span>
-                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">심리 문제</div>
-                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">두렵다</div>
-              </div>
-              <ul class="lt-list">
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">투자 자체가 처음이라 무섭다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">잃을까봐 시작을 못 한다</span>
-                  </div>
-                </li>
-                <li class="lt-add-row">
-                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-                </li>
-              </ul>
-            </li>
-
-            <!-- B5 UX -->
-            <li class="lt-node">
-              <div class="lt-box lt-branch b5">
-                <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                <span class="lt-num" contenteditable="true">B5</span>
-                <div class="lt-title" contenteditable="true" data-placeholder="가지 제목">UX 문제</div>
-                <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)">불편하다</div>
-              </div>
-              <ul class="lt-list">
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">진입 경로가 복잡하다</span>
-                  </div>
-                </li>
-                <li class="lt-node">
-                  <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-                    <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-                    <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-                    <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요">첫 매수까지 흐름이 어렵다</span>
-                  </div>
-                </li>
-                <li class="lt-add-row">
-                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-                </li>
-              </ul>
-            </li>
-
-            <!-- + 가지 추가 -->
-            <li class="lt-add-row">
-              <button class="lt-add-btn" onclick="addBranch(this)">＋ 가지(MECE 카테고리) 추가</button>
-            </li>
-          </ul>
-        </li>
-      </ul>
-
-      <div class="lt-hint">
-        <span><b>모든 박스</b> · 클릭하면 바로 텍스트 수정</span>
-        <span><b>상태 태그 클릭</b> · 검증 → 의심 → 미확인 순환</span>
-        <span><b>박스 우클릭</b> · 메모 추가/토글</span>
-        <span><b>＋ 박스 추가</b> · 빈 박스 즉시 생성 (입력 가능 상태)</span>
-        <span><b>박스 우상단 × </b> · 삭제</span>
-      </div>
+    <div class="lt-hint">
+      <span><b>모든 박스</b> · 클릭하면 바로 텍스트 수정</span>
+      <span><b>상태 태그 클릭</b> · 검증 → 의심 → 미확인 순환</span>
+      <span><b>박스 우클릭</b> · 메모 추가/토글</span>
+      <span><b>＋ 박스 추가</b> · 빈 박스 즉시 생성 (입력 가능 상태)</span>
+      <span><b>박스 우상단 × </b> · 삭제</span>
+      <span><b>자동 저장</b> · 1초 뒤 서버 동기화, 8초마다 다른 사람 변경 반영</span>
     </div>
   </div>
 </section>
@@ -1478,158 +1354,468 @@
 </footer>
 
 <script>
-  function cycleStatus(tagEl) {
-    const leafEl = tagEl.closest('.lt-leaf');
-    if (!leafEl) return;
-    const states = ['confirmed', 'suspected', 'unknown'];
-    const labels = { confirmed: '검증', suspected: '의심', unknown: '미확인' };
-    const cls = { confirmed: 'tag-confirmed', suspected: 'tag-suspected', unknown: 'tag-unknown' };
-    const current = states.find(s => leafEl.classList.contains(s)) || 'unknown';
-    const next = states[(states.indexOf(current) + 1) % states.length];
-    states.forEach(s => leafEl.classList.remove(s));
-    leafEl.classList.add(next);
-    tagEl.className = 'lt-leaf-tag ' + cls[next];
-    tagEl.textContent = labels[next];
+  // ============================================================
+  //  CONFIG  ─ Google Apps Script Web App URL
+  // ============================================================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxWK41n1v1RMn17OkAzjYEjclfPP3V_c66xWF_qb1PerViZKRA4ejPAB8ApOawxIDGTZA/exec';
+  const POLL_MS = 8000;
+  const DEBOUNCE_MS = 1000;
+
+  // ============================================================
+  //  SEED ─ 최초 1회만 사용 (서버가 비어있을 때)
+  // ============================================================
+  const SEED = [
+    { id: 'root', parent_id: '', type: 'root', text: '왜 카카오페이 사용자는 증권을 한 번도 안 쓰는가?', order_index: 0 },
+    { id: 'b1', parent_id: 'root', type: 'branch', num: 'B1', text: '인지 문제', subtitle: '모른다', color_class: 'b1', order_index: 0 },
+    { id: 'b1-l1', parent_id: 'b1', type: 'leaf', text: '카카오페이에 증권이 있는지 모른다', status: 'unknown', order_index: 0 },
+    { id: 'b1-l2', parent_id: 'b1', type: 'leaf', text: '증권 탭을 발견하지 못한다', status: 'unknown', order_index: 1 },
+    { id: 'b2', parent_id: 'root', type: 'branch', num: 'B2', text: '신뢰 문제', subtitle: '못 믿는다', color_class: 'b2', order_index: 1 },
+    { id: 'b2-l1', parent_id: 'b2', type: 'leaf', text: '카카오페이를 투자 앱으로 안 본다', status: 'unknown', order_index: 0 },
+    { id: 'b2-l2', parent_id: 'b2', type: 'leaf', text: '"귀여운 앱에 내 돈 맡기기 불안하다"', status: 'unknown', order_index: 1 },
+    { id: 'b3', parent_id: 'root', type: 'branch', num: 'B3', text: '동기 문제', subtitle: '이유가 없다', color_class: 'b3', order_index: 2 },
+    { id: 'b3-l1', parent_id: 'b3', type: 'leaf', text: '이미 쓰는 증권앱이 있다', status: 'unknown', order_index: 0 },
+    { id: 'b3-l2', parent_id: 'b3', type: 'leaf', text: '굳이 여기서 해야 할 이유를 모른다', status: 'unknown', order_index: 1 },
+    { id: 'b4', parent_id: 'root', type: 'branch', num: 'B4', text: '심리 문제', subtitle: '두렵다', color_class: 'b4', order_index: 3 },
+    { id: 'b4-l1', parent_id: 'b4', type: 'leaf', text: '투자 자체가 처음이라 무섭다', status: 'unknown', order_index: 0 },
+    { id: 'b4-l2', parent_id: 'b4', type: 'leaf', text: '잃을까봐 시작을 못 한다', status: 'unknown', order_index: 1 },
+    { id: 'b5', parent_id: 'root', type: 'branch', num: 'B5', text: 'UX 문제', subtitle: '불편하다', color_class: 'b5', order_index: 4 },
+    { id: 'b5-l1', parent_id: 'b5', type: 'leaf', text: '진입 경로가 복잡하다', status: 'unknown', order_index: 0 },
+    { id: 'b5-l2', parent_id: 'b5', type: 'leaf', text: '첫 매수까지 흐름이 어렵다', status: 'unknown', order_index: 1 },
+  ];
+
+  // ============================================================
+  //  STATE
+  // ============================================================
+  let localTree = [];                         // 모든 노드 배열
+  const pendingSaveTimers = new Map();        // id -> setTimeout
+  let userName = localStorage.getItem('lt-user') || '';
+  let lastRenderHash = '';                    // 폴링 충돌 방지
+
+  // ============================================================
+  //  UI HELPERS
+  // ============================================================
+  function setStatus(msg, kind) {
+    const el = document.getElementById('lt-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'lt-status' + (kind ? ' ' + kind : '');
   }
 
-  function addMemo(evt, leafEl) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    const existing = leafEl.querySelector('.lt-leaf-note');
-    if (!existing) {
-      const text = prompt('이 가설에 메모를 추가하세요:');
-      if (text) {
-        const n = document.createElement('div');
-        n.className = 'lt-leaf-note';
-        n.textContent = '메모: ' + text;
-        leafEl.appendChild(n);
-        leafEl.classList.add('has-note');
-      }
-    } else {
-      leafEl.classList.toggle('has-note');
+  function setMeName() {
+    const el = document.getElementById('lt-me-name');
+    if (el) el.textContent = userName || '익명';
+  }
+
+  function changeUserName() {
+    const name = prompt('이름 (편집 추적용):', userName || '');
+    if (name !== null) {
+      userName = name.trim() || '익명';
+      localStorage.setItem('lt-user', userName);
+      setMeName();
     }
   }
 
   function focusEditable(el) {
+    if (!el) return;
     el.focus();
-    // place cursor inside
-    const range = document.createRange();
-    const sel = window.getSelection();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
+    try {
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) {}
   }
 
-  function addLeaf(btnEl) {
-    const addRow = btnEl.closest('.lt-add-row');
-    const newLi = document.createElement('li');
-    newLi.className = 'lt-node';
-    newLi.innerHTML = `
-      <div class="lt-box lt-leaf unknown" oncontextmenu="addMemo(event, this)">
-        <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-        <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
-        <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요"></span>
-      </div>
-      <ul class="lt-list">
-        <li class="lt-add-row">
-          <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-        </li>
-      </ul>
-    `;
-    addRow.parentElement.insertBefore(newLi, addRow);
-    focusEditable(newLi.querySelector('.lt-leaf-text'));
+  function uid(prefix) {
+    return (prefix || 'n') + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
   }
 
-  function addBranch(btnEl) {
-    const addRow = btnEl.closest('.lt-add-row');
-    const newLi = document.createElement('li');
-    newLi.className = 'lt-node';
-    const existingBranches = document.querySelectorAll('.lt-branch').length;
-    const colorClass = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'][existingBranches % 6];
-    const nextNum = 'B' + (existingBranches + 1);
-    newLi.innerHTML = `
-      <div class="lt-box lt-branch ${colorClass}">
-        <button class="lt-del" onclick="delNode(this)" title="삭제">×</button>
-        <span class="lt-num" contenteditable="true">${nextNum}</span>
-        <div class="lt-title" contenteditable="true" data-placeholder="가지 제목"></div>
-        <div class="lt-sub" contenteditable="true" data-placeholder="설명 (선택)"></div>
-      </div>
-      <ul class="lt-list">
-        <li class="lt-add-row">
-          <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
-        </li>
-      </ul>
-    `;
-    addRow.parentElement.insertBefore(newLi, addRow);
-    focusEditable(newLi.querySelector('.lt-title'));
-  }
-
-  function delNode(btnEl) {
-    const node = btnEl.closest('.lt-node');
-    if (!node) return;
-    if (confirm('이 박스(및 하위 박스)를 삭제할까요?')) {
-      node.remove();
+  // ============================================================
+  //  API
+  // ============================================================
+  async function apiGet() {
+    try {
+      const res = await fetch(API_URL, { method: 'GET' });
+      return await res.json();
+    } catch (e) {
+      console.error('apiGet error', e);
+      return null;
     }
   }
 
-  // 모든 박스에 자식 추가 버튼 자동 부착 — 무한 깊이 지원
-  // (script가 body 끝에 있어 DOM이 이미 준비된 상태이므로 즉시 실행)
-  function ensureAddButtons() {
-    document.querySelectorAll('.lt-leaf').forEach(box => {
-      const li = box.closest('.lt-node');
-      if (!li) return;
-      if (li.querySelector(':scope > .lt-list')) return;
-      const ul = document.createElement('ul');
-      ul.className = 'lt-list';
-      ul.innerHTML = '<li class="lt-add-row"><button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button></li>';
-      li.appendChild(ul);
+  async function apiPost(action, payload) {
+    try {
+      setStatus('동기화 중…', 'syncing');
+      const body = Object.assign({ action, user: userName || '익명' }, payload || {});
+      // text/plain to avoid CORS preflight on Apps Script
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      });
+      const data = await res.json();
+      if (data && data.ok) {
+        setStatus('동기화됨 · ' + new Date().toLocaleTimeString('ko-KR'));
+        if (data.tree) {
+          mergeServerTree(data.tree);
+        }
+      } else {
+        setStatus('저장 실패: ' + (data && data.error || '알 수 없는 오류'), 'error');
+      }
+      return data;
+    } catch (e) {
+      console.error('apiPost error', e);
+      setStatus('서버 연결 실패', 'error');
+      return null;
+    }
+  }
+
+  // ============================================================
+  //  SYNC
+  // ============================================================
+  function mergeServerTree(serverTree) {
+    // 편집 중이면(focus 안에 있으면) 해당 노드는 서버 값으로 덮어쓰지 않음
+    const focusedId = getFocusedNodeId();
+    const pendingIds = new Set(pendingSaveTimers.keys());
+    const map = new Map();
+    serverTree.forEach(n => map.set(n.id, n));
+    // 로컬에서 편집 중이거나 저장 대기 중인 노드는 보존
+    localTree.forEach(local => {
+      if (local.id === focusedId || pendingIds.has(local.id)) {
+        map.set(local.id, local);
+      }
     });
+    const nextTree = Array.from(map.values());
+    const hash = JSON.stringify(nextTree.map(n => [n.id, n.parent_id, n.text, n.status, n.note, n.order_index, n.num, n.subtitle, n.color_class]));
+    if (hash === lastRenderHash) return;
+    lastRenderHash = hash;
+    localTree = nextTree;
+    renderTree();
   }
-  ensureAddButtons();
 
-  function exportLeaf(leafBox, depth) {
-    const pad = '  '.repeat(depth);
-    const tag = leafBox.querySelector(':scope > .lt-leaf-tag');
-    const text = leafBox.querySelector(':scope > .lt-leaf-text');
-    if (!text) return '';
-    let line = `${pad}- [${tag ? tag.textContent.trim() : '미확인'}] ${text.textContent.trim()}\n`;
-    const note = leafBox.querySelector(':scope > .lt-leaf-note');
-    if (note && leafBox.classList.contains('has-note')) {
-      line += `${pad}  └ ${note.textContent.trim()}\n`;
+  function getFocusedNodeId() {
+    const a = document.activeElement;
+    if (!a) return null;
+    const li = a.closest && a.closest('.lt-node');
+    if (!li) return null;
+    return li.dataset.id || null;
+  }
+
+  function scheduleSave(id) {
+    if (pendingSaveTimers.has(id)) clearTimeout(pendingSaveTimers.get(id));
+    pendingSaveTimers.set(id, setTimeout(async () => {
+      pendingSaveTimers.delete(id);
+      const node = localTree.find(n => n.id === id);
+      if (!node) return;
+      await apiPost('upsert', { node });
+    }, DEBOUNCE_MS));
+  }
+
+  // ============================================================
+  //  EDIT HANDLERS
+  // ============================================================
+  function onFieldEdit(id, field, value) {
+    const node = localTree.find(n => n.id === id);
+    if (!node) return;
+    node[field] = value;
+    scheduleSave(id);
+  }
+
+  function cycleStatus(id) {
+    const node = localTree.find(n => n.id === id);
+    if (!node || node.type !== 'leaf') return;
+    const order = ['confirmed', 'suspected', 'unknown'];
+    const cur = node.status || 'unknown';
+    node.status = order[(order.indexOf(cur) + 1) % order.length];
+    renderTree();
+    scheduleSave(id);
+  }
+
+  function addMemoTo(id, evt) {
+    if (evt) { evt.preventDefault(); evt.stopPropagation(); }
+    const node = localTree.find(n => n.id === id);
+    if (!node) return;
+    if (node.note) {
+      if (confirm('이 박스의 메모를 삭제할까요?')) {
+        node.note = '';
+        renderTree();
+        scheduleSave(id);
+      }
+    } else {
+      const txt = prompt('메모를 입력하세요:');
+      if (txt) {
+        node.note = txt;
+        renderTree();
+        scheduleSave(id);
+      }
     }
-    const li = leafBox.closest('.lt-node');
-    const childUl = li.querySelector(':scope > .lt-list');
-    if (childUl) {
-      childUl.querySelectorAll(':scope > .lt-node > .lt-leaf').forEach(child => {
-        line += exportLeaf(child, depth + 1);
+  }
+
+  function addLeafTo(parentId) {
+    const siblings = localTree.filter(n => n.parent_id === parentId);
+    const newNode = {
+      id: uid('l'),
+      parent_id: parentId,
+      type: 'leaf',
+      text: '',
+      status: 'unknown',
+      order_index: siblings.length,
+    };
+    localTree.push(newNode);
+    renderTree();
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id="${newNode.id}"] .lt-leaf-text`);
+      focusEditable(el);
+    }, 30);
+    apiPost('upsert', { node: newNode });
+  }
+
+  function addBranchTo(parentId) {
+    const siblings = localTree.filter(n => n.parent_id === parentId && n.type === 'branch');
+    const colors = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'];
+    const newNode = {
+      id: uid('b'),
+      parent_id: parentId,
+      type: 'branch',
+      num: 'B' + (siblings.length + 1),
+      text: '',
+      subtitle: '',
+      color_class: colors[siblings.length % colors.length],
+      order_index: siblings.length,
+    };
+    localTree.push(newNode);
+    renderTree();
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id="${newNode.id}"] .lt-title`);
+      focusEditable(el);
+    }, 30);
+    apiPost('upsert', { node: newNode });
+  }
+
+  function deleteNode(id) {
+    if (!confirm('이 박스(및 하위 박스)를 삭제할까요?')) return;
+    const toDelete = new Set([id]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      localTree.forEach(n => {
+        if (toDelete.has(n.parent_id) && !toDelete.has(n.id)) {
+          toDelete.add(n.id);
+          changed = true;
+        }
       });
     }
-    return line;
+    localTree = localTree.filter(n => !toDelete.has(n.id));
+    renderTree();
+    apiPost('delete', { id });
+  }
+
+  // ============================================================
+  //  RENDER
+  // ============================================================
+  function renderTree() {
+    const mount = document.getElementById('lt-mount');
+    if (!mount) return;
+    const byId = {};
+    localTree.forEach(n => { byId[n.id] = Object.assign({}, n, { children: [] }); });
+    let root = null;
+    localTree.forEach(n => {
+      const node = byId[n.id];
+      if (!n.parent_id) {
+        root = node;
+      } else if (byId[n.parent_id]) {
+        byId[n.parent_id].children.push(node);
+      }
+    });
+    if (!root) {
+      mount.innerHTML = '<p style="color:var(--text-mute); text-align:center; padding:40px;">트리가 비어있습니다.</p>';
+      return;
+    }
+    Object.values(byId).forEach(n => {
+      n.children.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+    });
+    mount.innerHTML = '';
+    const ul = document.createElement('ul');
+    ul.className = 'lt-list';
+    ul.appendChild(renderNode(root));
+    mount.appendChild(ul);
+  }
+
+  function renderNode(node) {
+    const li = document.createElement('li');
+    li.className = 'lt-node';
+    li.dataset.id = node.id;
+    li.appendChild(renderBox(node));
+
+    // children (or empty children list to enable add button on every box)
+    const ul = document.createElement('ul');
+    ul.className = 'lt-list';
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(c => ul.appendChild(renderNode(c)));
+    }
+    // + 박스 추가 (모든 박스에 — 무한 깊이)
+    const addLi = document.createElement('li');
+    addLi.className = 'lt-add-row';
+    const addBtn = document.createElement('button');
+    addBtn.className = 'lt-add-btn';
+    if (node.type === 'root') {
+      addBtn.textContent = '＋ 가지(MECE) 추가';
+      addBtn.onclick = () => addBranchTo(node.id);
+    } else {
+      addBtn.textContent = '＋ 박스 추가';
+      addBtn.onclick = () => addLeafTo(node.id);
+    }
+    addLi.appendChild(addBtn);
+    ul.appendChild(addLi);
+    li.appendChild(ul);
+    return li;
+  }
+
+  function renderBox(node) {
+    const box = document.createElement('div');
+    if (node.type === 'root') {
+      box.className = 'lt-box lt-root';
+      box.contentEditable = 'true';
+      box.dataset.placeholder = '핵심 질문을 입력하세요';
+      box.textContent = node.text || '';
+      box.addEventListener('input', () => onFieldEdit(node.id, 'text', box.textContent));
+    } else if (node.type === 'branch') {
+      box.className = 'lt-box lt-branch ' + (node.color_class || 'b1');
+      box.appendChild(makeDelBtn(node.id));
+      const num = document.createElement('span');
+      num.className = 'lt-num';
+      num.contentEditable = 'true';
+      num.textContent = node.num || '';
+      num.addEventListener('input', () => onFieldEdit(node.id, 'num', num.textContent));
+      box.appendChild(num);
+      const title = document.createElement('div');
+      title.className = 'lt-title';
+      title.contentEditable = 'true';
+      title.dataset.placeholder = '가지 제목';
+      title.textContent = node.text || '';
+      title.addEventListener('input', () => onFieldEdit(node.id, 'text', title.textContent));
+      box.appendChild(title);
+      const sub = document.createElement('div');
+      sub.className = 'lt-sub';
+      sub.contentEditable = 'true';
+      sub.dataset.placeholder = '설명 (선택)';
+      sub.textContent = node.subtitle || '';
+      sub.addEventListener('input', () => onFieldEdit(node.id, 'subtitle', sub.textContent));
+      box.appendChild(sub);
+    } else {
+      // leaf
+      const status = node.status || 'unknown';
+      box.className = 'lt-box lt-leaf ' + status;
+      box.oncontextmenu = (e) => addMemoTo(node.id, e);
+      box.appendChild(makeDelBtn(node.id));
+      const labels = { confirmed: '검증', suspected: '의심', unknown: '미확인' };
+      const tagCls = { confirmed: 'tag-confirmed', suspected: 'tag-suspected', unknown: 'tag-unknown' };
+      const tag = document.createElement('span');
+      tag.className = 'lt-leaf-tag ' + tagCls[status];
+      tag.textContent = labels[status];
+      tag.onclick = (e) => { e.stopPropagation(); cycleStatus(node.id); };
+      box.appendChild(tag);
+      const text = document.createElement('span');
+      text.className = 'lt-leaf-text';
+      text.contentEditable = 'true';
+      text.dataset.placeholder = '내용을 입력하세요';
+      text.textContent = node.text || '';
+      text.addEventListener('input', () => onFieldEdit(node.id, 'text', text.textContent));
+      box.appendChild(text);
+      if (node.note) {
+        const note = document.createElement('div');
+        note.className = 'lt-leaf-note';
+        note.textContent = '메모: ' + node.note;
+        box.classList.add('has-note');
+        box.appendChild(note);
+      }
+    }
+    return box;
+  }
+
+  function makeDelBtn(id) {
+    const b = document.createElement('button');
+    b.className = 'lt-del';
+    b.textContent = '×';
+    b.title = '삭제';
+    b.onclick = (e) => { e.stopPropagation(); deleteNode(id); };
+    return b;
+  }
+
+  // ============================================================
+  //  EXPORT
+  // ============================================================
+  function exportLeafRec(node, depth, byId) {
+    const pad = '  '.repeat(depth);
+    const tag = { confirmed: '검증', suspected: '의심', unknown: '미확인' }[node.status || 'unknown'];
+    let out = `${pad}- [${tag}] ${node.text || ''}\n`;
+    if (node.note) out += `${pad}  └ 메모: ${node.note}\n`;
+    const children = localTree.filter(n => n.parent_id === node.id).sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+    children.forEach(c => out += exportLeafRec(c, depth + 1, byId));
+    return out;
   }
 
   function exportTree() {
     let out = '## 로직트리 (Why Tree) 현재 상태\n\n';
-    const root = document.querySelector('.lt-root');
-    if (root) out += '> ' + root.innerText.trim().replace(/\n+/g, ' ') + '\n\n';
-    document.querySelectorAll('.lt-list > .lt-node > .lt-list > .lt-node').forEach(b => {
-      const branch = b.querySelector(':scope > .lt-branch');
-      if (!branch) return;
-      const num = branch.querySelector('.lt-num');
-      const title = branch.querySelector('.lt-title');
-      const sub = branch.querySelector('.lt-sub');
-      out += `### ${num ? num.textContent.trim() : ''} · ${title ? title.textContent.trim() : ''}`;
-      if (sub && sub.textContent.trim()) out += ` — ${sub.textContent.trim()}`;
+    const root = localTree.find(n => n.type === 'root');
+    if (root) out += '> ' + (root.text || '') + '\n\n';
+    const branches = localTree.filter(n => n.type === 'branch' && n.parent_id === (root && root.id))
+      .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+    branches.forEach(b => {
+      out += `### ${b.num || ''} · ${b.text || ''}`;
+      if (b.subtitle) out += ` — ${b.subtitle}`;
       out += '\n';
-      b.querySelectorAll(':scope > .lt-list > .lt-node > .lt-leaf').forEach(l => {
-        out += exportLeaf(l, 0);
-      });
+      const leaves = localTree.filter(n => n.parent_id === b.id).sort((a, x) => (a.order_index || 0) - (x.order_index || 0));
+      leaves.forEach(l => out += exportLeafRec(l, 0));
       out += '\n';
     });
     navigator.clipboard.writeText(out).then(() => {
       alert('현재 로직트리 상태가 클립보드에 복사되었습니다.');
     });
   }
+
+  // ============================================================
+  //  INIT
+  // ============================================================
+  async function init() {
+    if (!userName) {
+      const name = prompt('이름을 입력하세요 (편집 추적용, 나중에 변경 가능):', '');
+      userName = (name || '').trim() || '익명';
+      localStorage.setItem('lt-user', userName);
+    }
+    setMeName();
+    setStatus('서버에서 로딩 중…', 'syncing');
+    const data = await apiGet();
+    if (!data || !data.ok) {
+      setStatus('서버 연결 실패. 새로고침해주세요.', 'error');
+      return;
+    }
+    if (!data.tree || data.tree.length === 0) {
+      localTree = JSON.parse(JSON.stringify(SEED));
+      setStatus('초기 시드 업로드 중…', 'syncing');
+      await apiPost('bulkReplace', { tree: localTree });
+    } else {
+      localTree = data.tree;
+    }
+    renderTree();
+    setStatus('연결됨 · ' + new Date().toLocaleTimeString('ko-KR'));
+    startPolling();
+  }
+
+  function startPolling() {
+    setInterval(async () => {
+      if (getFocusedNodeId()) return; // 편집 중이면 폴링 스킵
+      if (pendingSaveTimers.size > 0) return; // 저장 대기 중이면 스킵
+      const data = await apiGet();
+      if (data && data.ok) {
+        mergeServerTree(data.tree);
+      }
+    }, POLL_MS);
+  }
+
+  init();
 </script>
 
 </body>
