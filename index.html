@@ -533,141 +533,93 @@
   .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
   .btn.primary:hover { background: #000; }
 
-  /* MINDMAP TREE */
-  .mindmap {
-    padding: 40px 24px 28px;
+  /* HORIZONTAL LOGIC TREE (좌→우) */
+  .logic-tree {
+    padding: 36px 24px;
     background: var(--bg-card);
     border: 1px solid var(--line);
-    border-radius: 20px;
+    border-radius: 16px;
     box-shadow: var(--shadow-md);
     overflow-x: auto;
   }
-  .mm-root-row {
-    display: flex; justify-content: center;
-    padding-bottom: 30px;
+  .lt-list { list-style: none; margin: 0; padding: 0; }
+  .lt-node {
+    display: flex;
+    align-items: center;
     position: relative;
   }
-  .mm-root-row::after {
-    content: ""; position: absolute;
-    top: calc(100% - 30px); left: 50%;
-    width: 2px; height: 30px;
-    background: var(--text-dim);
-    transform: translateX(-50%);
-  }
-  .mm-root {
-    padding: 18px 28px;
-    background: var(--kakao-yellow);
-    color: var(--kakao-brown);
-    border-radius: 14px;
-    font-size: 16px; font-weight: 800;
-    text-align: center; max-width: 760px;
-    box-shadow: 0 8px 20px rgba(254,229,0,0.35);
-    line-height: 1.4;
-  }
+  .lt-node + .lt-node { margin-top: 10px; }
 
-  .mm-branches {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    position: relative;
-    min-width: 880px;
-  }
-  /* horizontal trunk across branches */
-  .mm-branches::before {
-    content: ""; position: absolute;
-    top: 0; left: 12.5%; right: 12.5%;
-    height: 2px; background: var(--text-dim);
-  }
-  .mm-branch {
-    position: relative;
-    padding-top: 26px;
-    display: flex; flex-direction: column;
-  }
-  /* vertical stub from trunk to branch box */
-  .mm-branch::before {
-    content: ""; position: absolute;
-    left: 50%; top: 0;
-    width: 2px; height: 26px;
-    background: var(--text-dim);
-    transform: translateX(-50%);
-  }
-
-  .mm-branch-box {
-    padding: 14px 14px;
+  /* Box base */
+  .lt-box {
+    flex-shrink: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
     background: var(--bg-card);
-    border: 2px solid;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: var(--shadow-sm);
+    border: 1.5px solid var(--line);
+    font-size: 13px;
+    color: var(--text);
     position: relative;
     z-index: 2;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.4;
+    word-break: keep-all;
   }
-  .mm-branch-box.b1 { border-color: #6366F1; background: #EEF2FF; }
-  .mm-branch-box.b2 { border-color: #059669; background: #ECFDF5; }
-  .mm-branch-box.b3 { border-color: #D97706; background: #FFFBEB; }
-  .mm-branch-box.b4 { border-color: #DC2626; background: #FEF2F2; }
-  .mm-branch-num {
+
+  /* Root box (좌측, 연한 노랑) */
+  .lt-root {
+    background: var(--kakao-yellow);
+    border-color: var(--kakao-yellow);
+    color: var(--kakao-brown);
+    font-weight: 800;
+    font-size: 14px;
+    padding: 16px 20px;
+    max-width: 240px;
+    text-align: center;
+    box-shadow: 0 6px 16px rgba(254,229,0,0.3);
+  }
+
+  /* Branch box (중간, 카테고리별 색상) */
+  .lt-branch {
+    width: 180px;
+    text-align: left;
+    font-weight: 700;
+  }
+  .lt-branch.b1 { background: #EEF2FF; border-color: #6366F1; }
+  .lt-branch.b2 { background: #ECFDF5; border-color: #059669; }
+  .lt-branch.b3 { background: #FFFBEB; border-color: #D97706; }
+  .lt-branch.b4 { background: #FEF2F2; border-color: #DC2626; }
+  .lt-branch.b5 { background: #F5F3FF; border-color: #7C3AED; }
+  .lt-branch.b6 { background: #FDF4FF; border-color: #C026D3; }
+  .lt-num {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 5px;
+    padding: 2px 7px;
+    border-radius: 4px;
     background: var(--text); color: #fff;
     font-size: 10px; font-weight: 800;
-    font-family: "SF Mono", monospace; letter-spacing: 0.05em;
+    font-family: "SF Mono", monospace;
     margin-bottom: 6px;
   }
-  .mm-branch-name {
-    font-size: 14px; font-weight: 800; color: var(--text);
-    letter-spacing: -0.01em;
-  }
-  .mm-branch-sub {
-    font-size: 11px; color: var(--text-dim);
-    margin-top: 4px; line-height: 1.4;
-  }
+  .lt-title { font-size: 14px; font-weight: 800; }
+  .lt-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-weight: 500; }
 
-  .mm-leaves {
-    margin-top: 20px;
-    padding-left: 22px;
-    display: flex; flex-direction: column;
-    gap: 10px;
-    position: relative;
-  }
-  /* vertical trunk on left of leaves */
-  .mm-leaves::before {
-    content: ""; position: absolute;
-    left: 8px; top: -20px;
-    bottom: 18px;
-    width: 2px; background: var(--line);
-  }
-
-  .mm-leaf {
-    padding: 10px 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-left-width: 4px;
-    border-radius: 8px;
-    font-size: 12px; line-height: 1.5;
-    color: var(--text);
+  /* Leaf box (우측, 흰색) */
+  .lt-leaf {
+    width: 280px;
     cursor: pointer;
-    position: relative;
-    box-shadow: var(--shadow-sm);
+    border-left-width: 4px;
     transition: all .2s;
+    font-size: 12px;
   }
-  .mm-leaf:hover {
+  .lt-leaf:hover {
     box-shadow: var(--shadow-md);
     transform: translateX(2px);
     border-color: var(--text-dim);
   }
-  .mm-leaf.confirmed { border-left-color: var(--good); }
-  .mm-leaf.suspected { border-left-color: var(--warn); }
-  .mm-leaf.unknown { border-left-color: var(--text-mute); }
-  /* connector stub from trunk to leaf */
-  .mm-leaf::before {
-    content: ""; position: absolute;
-    left: -14px; top: 50%;
-    width: 14px; height: 2px;
-    background: var(--line);
-  }
-
-  .mm-leaf-tag {
+  .lt-leaf.confirmed { border-left-color: var(--good); }
+  .lt-leaf.suspected { border-left-color: var(--warn); }
+  .lt-leaf.unknown { border-left-color: var(--text-mute); }
+  .lt-leaf-tag {
     display: inline-block;
     padding: 1px 6px;
     border-radius: 4px;
@@ -679,8 +631,8 @@
   .tag-confirmed { background: rgba(22,163,74,0.12); color: var(--good); }
   .tag-suspected { background: rgba(245,158,11,0.15); color: var(--warn); }
   .tag-unknown { background: rgba(149,149,159,0.18); color: var(--text-dim); }
-  .mm-leaf-text { color: var(--text); }
-  .mm-leaf-note {
+  .lt-leaf-text { color: var(--text); }
+  .lt-leaf-note {
     display: none;
     margin-top: 8px;
     padding: 7px 9px;
@@ -690,34 +642,78 @@
     color: #6B5500;
     line-height: 1.45;
   }
-  .mm-leaf.has-note .mm-leaf-note { display: block; }
+  .lt-leaf.has-note .lt-leaf-note { display: block; }
 
-  .mm-add {
-    padding: 10px 12px;
-    background: transparent;
-    border: 1.5px dashed var(--line);
-    border-radius: 8px;
-    text-align: center;
-    font-size: 12px; font-weight: 600;
-    color: var(--text-mute);
-    cursor: pointer;
+  /* Children list nested right of parent */
+  .lt-node > .lt-list {
+    margin-left: 48px;
     position: relative;
+  }
+
+  /* Horizontal stub from parent box's right side to vertical trunk */
+  .lt-node:has(> .lt-list) > .lt-box::after {
+    content: "";
+    position: absolute;
+    right: -24px;
+    top: 50%;
+    width: 24px;
+    border-top: 1.5px solid var(--text-mute);
+  }
+
+  /* Each child: horizontal stub from trunk to child's left side */
+  .lt-node > .lt-list > .lt-node::before {
+    content: "";
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    width: 24px;
+    border-top: 1.5px solid var(--text-mute);
+  }
+
+  /* Vertical trunk (border-left on each child, with first/last truncation) */
+  .lt-node > .lt-list > .lt-node::after {
+    content: "";
+    position: absolute;
+    left: -24px;
+    top: -10px;
+    bottom: -10px;
+    border-left: 1.5px solid var(--text-mute);
+  }
+  .lt-node > .lt-list > .lt-node:only-child::after { display: none; }
+  .lt-node > .lt-list > .lt-node:first-child:not(:only-child)::after {
+    top: 50%; bottom: -10px;
+  }
+  .lt-node > .lt-list > .lt-node:last-child:not(:only-child)::after {
+    top: -10px; bottom: 50%;
+  }
+
+  /* + 박스 추가 button */
+  .lt-add-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: 10px;
+  }
+  .lt-add-btn {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px dashed var(--text-mute);
+    background: transparent;
+    color: var(--text-mute);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
     transition: all .2s;
   }
-  .mm-add:hover {
+  .lt-add-btn:hover {
     border-color: var(--text);
     color: var(--text);
     background: var(--bg-elev);
   }
-  .mm-add::before {
-    content: ""; position: absolute;
-    left: -14px; top: 50%;
-    width: 14px; height: 0;
-    border-top: 2px dashed var(--line);
-  }
 
-  .mm-hint {
-    margin-top: 24px;
+  .lt-hint {
+    margin-top: 28px;
     padding: 12px 16px;
     background: var(--bg-elev);
     border: 1px solid var(--line);
@@ -725,7 +721,7 @@
     font-size: 12px; color: var(--text-dim);
     display: flex; gap: 18px; flex-wrap: wrap;
   }
-  .mm-hint b { color: var(--text); font-weight: 700; }
+  .lt-hint b { color: var(--text); font-weight: 700; }
 
   /* WORKSHOP */
   .ws-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -776,9 +772,11 @@
     .viz-gap-arr { display: none; }
     .res-grid { grid-template-columns: 1fr; }
     .lt-methods { grid-template-columns: 1fr; }
-    .mindmap { padding: 24px 16px; }
-    .mm-root { font-size: 14px; padding: 14px 16px; }
-    .mm-hint { flex-direction: column; gap: 8px; }
+    .logic-tree { padding: 20px 16px; }
+    .lt-root { font-size: 13px; padding: 12px 14px; max-width: 200px; }
+    .lt-branch { width: 160px; }
+    .lt-leaf { width: 240px; }
+    .lt-hint { flex-direction: column; gap: 8px; }
   }
 </style>
 </head>
@@ -1202,120 +1200,159 @@
       <button class="btn" onclick="window.print()">PDF로 저장 / 인쇄</button>
     </div>
 
-    <div class="mindmap">
-      <div class="mm-root-row">
-        <div class="mm-root">
-          ❓ Why · 왜 기존 사용자 2,265만 명은 카카오페이증권에 도달하지 않는가?
-        </div>
-      </div>
+    <div class="logic-tree">
+      <ul class="lt-list">
+        <li class="lt-node">
+          <!-- ROOT -->
+          <div class="lt-box lt-root">
+            ❓ Why<br>왜 기존 사용자 2,265만 명은<br>카카오페이증권에 도달하지 않는가?
+          </div>
 
-      <div class="mm-branches">
-        <!-- B1 알기 -->
-        <div class="mm-branch">
-          <div class="mm-branch-box b1">
-            <div class="mm-branch-num">B1</div>
-            <div class="mm-branch-name">알기 (Know)</div>
-            <div class="mm-branch-sub">증권 기능 존재 자체를 모른다</div>
-          </div>
-          <div class="mm-leaves">
-            <div class="mm-leaf suspected" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-suspected">의심</span>
-              <span class="mm-leaf-text">메인 화면에서 증권 진입 동선이 광고·결제에 밀려 노출이 약하다</span>
-              <div class="mm-leaf-note">메모: 메인 카드 노출 빈도 데이터 필요</div>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">"카카오페이"와 "카카오페이증권"을 별개 앱·서비스로 오해한다</span>
-              <div class="mm-leaf-note">메모: 사용자 인터뷰 5명 진행 예정</div>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">투자 진입 CRM·알림이 비활성·신규 사용자에게 도달하지 않는다</span>
-            </div>
-            <div class="mm-add" onclick="addLeaf(this)">＋ 가설 추가</div>
-          </div>
-        </div>
+          <ul class="lt-list">
+            <!-- B1 -->
+            <li class="lt-node">
+              <div class="lt-box lt-branch b1">
+                <span class="lt-num">B1</span>
+                <div class="lt-title">알기 (Know)</div>
+                <div class="lt-sub">증권 기능 존재 자체를 모른다</div>
+              </div>
+              <ul class="lt-list">
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-suspected">의심</span>
+                    <span class="lt-leaf-text">메인 화면에서 증권 진입 동선이 광고·결제에 밀려 노출이 약하다</span>
+                    <div class="lt-leaf-note">메모: 메인 카드 노출 빈도 데이터 필요</div>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">"카카오페이"와 "카카오페이증권"을 별개 앱·서비스로 오해한다</span>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">투자 진입 CRM·알림이 비활성·신규 사용자에게 도달하지 않는다</span>
+                  </div>
+                </li>
+                <li class="lt-add-row">
+                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+                </li>
+              </ul>
+            </li>
 
-        <!-- B2 접근 -->
-        <div class="mm-branch">
-          <div class="mm-branch-box b2">
-            <div class="mm-branch-num">B2</div>
-            <div class="mm-branch-name">접근 (Reach)</div>
-            <div class="mm-branch-sub">알지만 진입까지 비용이 크다</div>
-          </div>
-          <div class="mm-leaves">
-            <div class="mm-leaf confirmed" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-confirmed">검증</span>
-              <span class="mm-leaf-text">VOC: "찾기 어렵다, 광고가 먼저 보인다" — 동선 깊이 문제</span>
-              <div class="mm-leaf-note">메모: 리서치 VOC 반복 키워드 1순위</div>
-            </div>
-            <div class="mm-leaf suspected" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-suspected">의심</span>
-              <span class="mm-leaf-text">투자 탭이 보험·대출과 섞여 있어 인지 비용이 증가한다</span>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">결제 완료 화면에서 투자로 잇는 트리거가 없다 ("바로 투자" 부재)</span>
-            </div>
-            <div class="mm-add" onclick="addLeaf(this)">＋ 가설 추가</div>
-          </div>
-        </div>
+            <!-- B2 -->
+            <li class="lt-node">
+              <div class="lt-box lt-branch b2">
+                <span class="lt-num">B2</span>
+                <div class="lt-title">접근 (Reach)</div>
+                <div class="lt-sub">알지만 진입까지 비용이 크다</div>
+              </div>
+              <ul class="lt-list">
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf confirmed" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-confirmed">검증</span>
+                    <span class="lt-leaf-text">VOC "찾기 어렵다, 광고가 먼저 보인다" — 동선 깊이 문제</span>
+                    <div class="lt-leaf-note">메모: 리서치 VOC 반복 키워드 1순위</div>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-suspected">의심</span>
+                    <span class="lt-leaf-text">투자 탭이 보험·대출과 섞여 있어 인지 비용이 증가한다</span>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">결제 완료 화면에 투자로 잇는 트리거가 없다 ("바로 투자" 부재)</span>
+                  </div>
+                </li>
+                <li class="lt-add-row">
+                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+                </li>
+              </ul>
+            </li>
 
-        <!-- B3 시도 -->
-        <div class="mm-branch">
-          <div class="mm-branch-box b3">
-            <div class="mm-branch-num">B3</div>
-            <div class="mm-branch-name">시도 (Try)</div>
-            <div class="mm-branch-sub">진입은 했지만 첫 거래로 이어지지 않는다</div>
-          </div>
-          <div class="mm-leaves">
-            <div class="mm-leaf suspected" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-suspected">의심</span>
-              <span class="mm-leaf-text">"동전 모으기" 같은 초저관여 진입 상품이 약해 첫 거래 장벽이 높다</span>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">선불충전금 2조 원이 투자 진입과 연결된 인센티브가 없다</span>
-              <div class="mm-leaf-note">메모: 잔액 → 자동투자 연동 가설 검토</div>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">결제 데이터가 맞춤 투자 제안으로 활용되지 않는다 (개인화 결여)</span>
-            </div>
-            <div class="mm-add" onclick="addLeaf(this)">＋ 가설 추가</div>
-          </div>
-        </div>
+            <!-- B3 -->
+            <li class="lt-node">
+              <div class="lt-box lt-branch b3">
+                <span class="lt-num">B3</span>
+                <div class="lt-title">시도 (Try)</div>
+                <div class="lt-sub">진입은 했지만 첫 거래로 이어지지 않는다</div>
+              </div>
+              <ul class="lt-list">
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-suspected">의심</span>
+                    <span class="lt-leaf-text">"동전 모으기" 같은 초저관여 진입 상품이 약해 첫 거래 장벽이 높다</span>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">선불충전금 2조 원이 투자 진입과 연결된 인센티브가 없다</span>
+                    <div class="lt-leaf-note">메모: 잔액 → 자동투자 연동 가설 검토</div>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">결제 데이터가 맞춤 투자 제안으로 활용되지 않는다 (개인화 결여)</span>
+                  </div>
+                </li>
+                <li class="lt-add-row">
+                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+                </li>
+              </ul>
+            </li>
 
-        <!-- B4 유지 -->
-        <div class="mm-branch">
-          <div class="mm-branch-box b4">
-            <div class="mm-branch-num">B4</div>
-            <div class="mm-branch-name">유지 (Stay)</div>
-            <div class="mm-branch-sub">"투자용"으로는 부담스러워 멀어진다</div>
-          </div>
-          <div class="mm-leaves">
-            <div class="mm-leaf confirmed" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-confirmed">검증</span>
-              <span class="mm-leaf-text">"가벼운 결제·송금 앱" 브랜드 이미지가 투자 플랫폼 전환의 인지 부담</span>
-              <div class="mm-leaf-note">메모: 리서치 분석에서 직접 도출되는 결론</div>
-            </div>
-            <div class="mm-leaf suspected" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-suspected">의심</span>
-              <span class="mm-leaf-text">토스증권 대비 "전문성·정보 깊이"가 약하다는 사용자 인식</span>
-            </div>
-            <div class="mm-leaf unknown" onclick="toggleNote(this)" oncontextmenu="cycleStatus(event, this)">
-              <span class="mm-leaf-tag tag-unknown">미확인</span>
-              <span class="mm-leaf-text">투자 손실 우려가 카카오페이 전체 신뢰도에 영향을 줄까봐 망설인다</span>
-            </div>
-            <div class="mm-add" onclick="addLeaf(this)">＋ 가설 추가</div>
-          </div>
-        </div>
-      </div>
+            <!-- B4 -->
+            <li class="lt-node">
+              <div class="lt-box lt-branch b4">
+                <span class="lt-num">B4</span>
+                <div class="lt-title">유지 (Stay)</div>
+                <div class="lt-sub">"투자용"으로는 부담스러워 멀어진다</div>
+              </div>
+              <ul class="lt-list">
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf confirmed" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-confirmed">검증</span>
+                    <span class="lt-leaf-text">"가벼운 결제·송금 앱" 브랜드 이미지가 투자 플랫폼 전환의 인지 부담</span>
+                    <div class="lt-leaf-note">메모: 리서치 분석에서 직접 도출되는 결론</div>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf suspected" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-suspected">의심</span>
+                    <span class="lt-leaf-text">토스증권 대비 "전문성·정보 깊이"가 약하다는 사용자 인식</span>
+                  </div>
+                </li>
+                <li class="lt-node">
+                  <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+                    <span class="lt-leaf-tag tag-unknown">미확인</span>
+                    <span class="lt-leaf-text">투자 손실 우려가 카카오페이 전체 신뢰도에 영향을 줄까봐 망설인다</span>
+                  </div>
+                </li>
+                <li class="lt-add-row">
+                  <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+                </li>
+              </ul>
+            </li>
 
-      <div class="mm-hint">
-        <span><b>박스 클릭</b> · 메모 추가/토글</span>
-        <span><b>박스 우클릭</b> · 상태 변경 (검증 → 의심 → 미확인)</span>
-        <span><b>＋ 가설 추가</b> · 새 박스 생성</span>
+            <!-- + 가지 추가 -->
+            <li class="lt-add-row">
+              <button class="lt-add-btn" onclick="addBranch(this)">＋ 가지(MECE) 추가</button>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="lt-hint">
+        <span><b>리프 박스 클릭</b> · 상태 순환 (검증 → 의심 → 미확인)</span>
+        <span><b>리프 박스 우클릭</b> · 메모 추가/토글</span>
+        <span><b>＋ 박스 추가</b> · 같은 가지에 새 가설 박스 생성</span>
       </div>
     </div>
   </div>
@@ -1369,13 +1406,36 @@
 </footer>
 
 <script>
-  function toggleNote(leafEl) {
-    const existing = leafEl.querySelector('.mm-leaf-note');
+  function escapeText(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function cycleStatus(leafEl) {
+    const states = ['confirmed', 'suspected', 'unknown'];
+    const labels = { confirmed: '검증', suspected: '의심', unknown: '미확인' };
+    const cls = { confirmed: 'tag-confirmed', suspected: 'tag-suspected', unknown: 'tag-unknown' };
+    const current = states.find(s => leafEl.classList.contains(s)) || 'unknown';
+    const next = states[(states.indexOf(current) + 1) % states.length];
+    states.forEach(s => leafEl.classList.remove(s));
+    leafEl.classList.add(next);
+    const tag = leafEl.querySelector('.lt-leaf-tag');
+    if (tag) {
+      tag.className = 'lt-leaf-tag ' + cls[next];
+      tag.textContent = labels[next];
+    }
+  }
+
+  function addMemo(evt, leafEl) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    const existing = leafEl.querySelector('.lt-leaf-note');
     if (!existing) {
       const text = prompt('이 가설에 메모를 추가하세요:');
       if (text) {
         const n = document.createElement('div');
-        n.className = 'mm-leaf-note';
+        n.className = 'lt-leaf-note';
         n.textContent = '메모: ' + text;
         leafEl.appendChild(n);
         leafEl.classList.add('has-note');
@@ -1385,47 +1445,61 @@
     }
   }
 
-  function cycleStatus(evt, leafEl) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    const states = ['confirmed', 'suspected', 'unknown'];
-    const labels = { confirmed: '검증', suspected: '의심', unknown: '미확인' };
-    const cls = { confirmed: 'tag-confirmed', suspected: 'tag-suspected', unknown: 'tag-unknown' };
-    const current = states.find(s => leafEl.classList.contains(s)) || 'unknown';
-    const next = states[(states.indexOf(current) + 1) % states.length];
-    states.forEach(s => leafEl.classList.remove(s));
-    leafEl.classList.add(next);
-    const tag = leafEl.querySelector('.mm-leaf-tag');
-    if (tag) {
-      tag.className = 'mm-leaf-tag ' + cls[next];
-      tag.textContent = labels[next];
-    }
+  function addLeaf(btnEl) {
+    const text = prompt('새 가설(박스 내용)을 입력하세요:');
+    if (!text) return;
+    const addRow = btnEl.closest('.lt-add-row');
+    const newLi = document.createElement('li');
+    newLi.className = 'lt-node';
+    newLi.innerHTML = `
+      <div class="lt-box lt-leaf unknown" onclick="cycleStatus(this)" oncontextmenu="addMemo(event, this)">
+        <span class="lt-leaf-tag tag-unknown">미확인</span>
+        <span class="lt-leaf-text">${escapeText(text)}</span>
+      </div>
+    `;
+    addRow.parentElement.insertBefore(newLi, addRow);
   }
 
-  function addLeaf(btnEl) {
-    const text = prompt('새 가설을 입력하세요:');
-    if (!text) return;
-    const leaf = document.createElement('div');
-    leaf.className = 'mm-leaf unknown';
-    leaf.onclick = function() { toggleNote(this); };
-    leaf.oncontextmenu = function(e) { cycleStatus(e, this); };
-    leaf.innerHTML = '<span class="mm-leaf-tag tag-unknown">미확인</span><span class="mm-leaf-text">' + text + '</span>';
-    btnEl.parentElement.insertBefore(leaf, btnEl);
+  function addBranch(btnEl) {
+    const title = prompt('새 가지(MECE 카테고리) 이름을 입력하세요. 예: B5 추천 (Refer)');
+    if (!title) return;
+    const sub = prompt('이 가지에 대한 한 줄 설명을 입력하세요 (선택):') || '';
+    const addRow = btnEl.closest('.lt-add-row');
+    const newLi = document.createElement('li');
+    newLi.className = 'lt-node';
+    newLi.innerHTML = `
+      <div class="lt-box lt-branch b5">
+        <span class="lt-num">+</span>
+        <div class="lt-title">${escapeText(title)}</div>
+        ${sub ? `<div class="lt-sub">${escapeText(sub)}</div>` : ''}
+      </div>
+      <ul class="lt-list">
+        <li class="lt-add-row">
+          <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+        </li>
+      </ul>
+    `;
+    addRow.parentElement.insertBefore(newLi, addRow);
   }
 
   function exportTree() {
     let out = '## 로직트리 (Why Tree) 현재 상태\n\n';
-    out += '> ' + document.querySelector('.mm-root').textContent.trim() + '\n\n';
-    document.querySelectorAll('.mm-branch').forEach(b => {
-      const num = b.querySelector('.mm-branch-num').textContent.trim();
-      const name = b.querySelector('.mm-branch-name').textContent.trim();
-      const sub = b.querySelector('.mm-branch-sub').textContent.trim();
-      out += `### ${num} · ${name} — ${sub}\n`;
-      b.querySelectorAll('.mm-leaf').forEach(l => {
-        const tag = l.querySelector('.mm-leaf-tag').textContent.trim();
-        const text = l.querySelector('.mm-leaf-text').textContent.trim();
-        out += `- [${tag}] ${text}\n`;
-        const note = l.querySelector('.mm-leaf-note');
+    const root = document.querySelector('.lt-root');
+    if (root) out += '> ' + root.innerText.trim().replace(/\n+/g, ' ') + '\n\n';
+    document.querySelectorAll('.lt-list > .lt-node > .lt-list > .lt-node').forEach(b => {
+      const num = b.querySelector('.lt-num');
+      const title = b.querySelector('.lt-title');
+      const sub = b.querySelector('.lt-sub');
+      if (!num || !title) return;
+      out += `### ${num.textContent.trim()} · ${title.textContent.trim()}`;
+      if (sub) out += ` — ${sub.textContent.trim()}`;
+      out += '\n';
+      b.querySelectorAll(':scope > .lt-list > .lt-node > .lt-leaf').forEach(l => {
+        const tag = l.querySelector('.lt-leaf-tag');
+        const text = l.querySelector('.lt-leaf-text');
+        if (!tag || !text) return;
+        out += `- [${tag.textContent.trim()}] ${text.textContent.trim()}\n`;
+        const note = l.querySelector('.lt-leaf-note');
         if (note && l.classList.contains('has-note')) {
           out += `  └ ${note.textContent.trim()}\n`;
         }
