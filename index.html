@@ -1531,6 +1531,11 @@
         <span class="lt-leaf-tag tag-unknown" onclick="cycleStatus(this)">미확인</span>
         <span class="lt-leaf-text" contenteditable="true" data-placeholder="내용을 입력하세요"></span>
       </div>
+      <ul class="lt-list">
+        <li class="lt-add-row">
+          <button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button>
+        </li>
+      </ul>
     `;
     addRow.parentElement.insertBefore(newLi, addRow);
     focusEditable(newLi.querySelector('.lt-leaf-text'));
@@ -1568,6 +1573,39 @@
     }
   }
 
+  // 기존 리프 박스에 자식 추가 버튼 자동 부착 (꼬리의 꼬리 지원)
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.lt-leaf').forEach(box => {
+      const li = box.closest('.lt-node');
+      if (!li) return;
+      if (li.querySelector(':scope > .lt-list')) return;
+      const ul = document.createElement('ul');
+      ul.className = 'lt-list';
+      ul.innerHTML = '<li class="lt-add-row"><button class="lt-add-btn" onclick="addLeaf(this)">＋ 박스 추가</button></li>';
+      li.appendChild(ul);
+    });
+  });
+
+  function exportLeaf(leafBox, depth) {
+    const pad = '  '.repeat(depth);
+    const tag = leafBox.querySelector(':scope > .lt-leaf-tag');
+    const text = leafBox.querySelector(':scope > .lt-leaf-text');
+    if (!text) return '';
+    let line = `${pad}- [${tag ? tag.textContent.trim() : '미확인'}] ${text.textContent.trim()}\n`;
+    const note = leafBox.querySelector(':scope > .lt-leaf-note');
+    if (note && leafBox.classList.contains('has-note')) {
+      line += `${pad}  └ ${note.textContent.trim()}\n`;
+    }
+    const li = leafBox.closest('.lt-node');
+    const childUl = li.querySelector(':scope > .lt-list');
+    if (childUl) {
+      childUl.querySelectorAll(':scope > .lt-node > .lt-leaf').forEach(child => {
+        line += exportLeaf(child, depth + 1);
+      });
+    }
+    return line;
+  }
+
   function exportTree() {
     let out = '## 로직트리 (Why Tree) 현재 상태\n\n';
     const root = document.querySelector('.lt-root');
@@ -1582,14 +1620,7 @@
       if (sub && sub.textContent.trim()) out += ` — ${sub.textContent.trim()}`;
       out += '\n';
       b.querySelectorAll(':scope > .lt-list > .lt-node > .lt-leaf').forEach(l => {
-        const tag = l.querySelector('.lt-leaf-tag');
-        const text = l.querySelector('.lt-leaf-text');
-        if (!text) return;
-        out += `- [${tag ? tag.textContent.trim() : '미확인'}] ${text.textContent.trim()}\n`;
-        const note = l.querySelector('.lt-leaf-note');
-        if (note && l.classList.contains('has-note')) {
-          out += `  └ ${note.textContent.trim()}\n`;
-        }
+        out += exportLeaf(l, 0);
       });
       out += '\n';
     });
